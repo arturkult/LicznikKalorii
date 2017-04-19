@@ -48,7 +48,9 @@ public class MainController implements Initializable
         todayTableView.setItems(meals);
     }
 
-    public void addButtonClicked(ActionEvent actionEvent) {
+
+    public void showItemViewer(Meal meal)
+    {
         Parent root;
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/sample/itemChooser.fxml"));
@@ -56,6 +58,8 @@ public class MainController implements Initializable
             Stage stage = new Stage();
             stage.setTitle("Dodaj Posiłek");
             stage.setScene(new Scene(root1));
+            ItemChooserController controller = fxmlLoader.getController();
+            controller.initData(meal);
             stage.showAndWait();
             createItemList();
             todayTableView.setItems(meals);
@@ -63,6 +67,11 @@ public class MainController implements Initializable
         catch (IOException e){
             e.printStackTrace();
         }
+
+    }
+
+    public void addButtonClicked(ActionEvent actionEvent) {
+        showItemViewer(null);
     }
     public void createItemList(){
         try
@@ -84,6 +93,13 @@ public class MainController implements Initializable
         catch (IOException e)
         {
             e.printStackTrace();
+        }
+    }
+
+    public void changeButtonClicked(ActionEvent actionEvent) {
+        if (!todayTableView.getSelectionModel().isEmpty())
+        {
+
         }
     }
 }

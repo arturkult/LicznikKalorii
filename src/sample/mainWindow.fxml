@@ -29,7 +29,7 @@
                               <Insets left="10.0" top="10.0" />
                            </VBox.margin>
                         </Button>
-                        <Button fx:id="changeButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" text="Zmień" textAlignment="CENTER">
+                        <Button fx:id="changeButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#changeButtonClicked" text="Zmień" textAlignment="CENTER">
                            <VBox.margin>
                               <Insets left="10.0" top="10.0" />
                            </VBox.margin>
