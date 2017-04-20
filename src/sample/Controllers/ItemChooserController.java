@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import sample.Models.Item;
 import sample.Models.Meal;
+import sample.Services.MealService;
 
 import javax.xml.soap.Text;
 import java.io.*;
@@ -44,51 +45,27 @@ public class ItemChooserController implements Initializable
 
     ObservableList<Item> items = FXCollections.observableArrayList();
     ObservableList<Item> selectedItems = FXCollections.observableArrayList();
+    MealService mealService = new MealService();
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         itemNameColumn.setCellValueFactory(item->new SimpleStringProperty(item.getValue().getNazwaProperty()));
         itemAmountColumn.setCellValueFactory(item->new SimpleStringProperty(item.getValue().getIloscProperty()));
         selectedItemNameColumn.setCellValueFactory(item->new SimpleStringProperty(item.getValue().getNazwaProperty()));
         selectedItemAmountColumn.setCellValueFactory(item->new SimpleStringProperty(item.getValue().getIloscProperty()));
-        try
-                (BufferedReader bufferedReader = new BufferedReader(new FileReader("src/sample/tabela.txt")))
-        {
-            String line;
-            while((line=bufferedReader.readLine())!=null) {
-                StringTokenizer stringTokenizer = new StringTokenizer(line, "\t");
-                String nazwa,ilosc;
-                nazwa = stringTokenizer.nextToken();
-                ilosc = stringTokenizer.nextToken();
-                items.add(new Item(nazwa,ilosc,"1"));
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
 
+        items = FXCollections.observableArrayList(mealService.listAllItems());
         itemsViewTable.setItems(items);
+        //itemsViewTable.setItems(FXCollections.observableList(mealService.listAllItems()));
+
     }
     public void initData(Meal meal)
     {
         if(meal !=null)
         {
-            try(BufferedReader bufferedReader = new BufferedReader(new FileReader("Meals/"+meal.getName())))
-            {
-                String line;
-                while((line=bufferedReader.readLine())!=null) {
-                    StringTokenizer stringTokenizer = new StringTokenizer(line, "\t");
-                    String nazwa,ilosc;
-                    nazwa = stringTokenizer.nextToken();
-                    ilosc = stringTokenizer.nextToken();
-                    selectedItems.add(new Item(nazwa,ilosc,"1"));
-                }
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-
-            }
+            selectedItems = FXCollections.observableArrayList(mealService.getItems(meal.getName()));
+            selectedItemTableView.setItems(selectedItems);
+            //selectedItemTableView.setItems(FXCollections.observableList(mealService.getItems(meal.getName())));
+            mealNameField.setText(meal.getName());
         }
     }
     public void addSelectedItemButtonClicked(ActionEvent actionEvent) {
@@ -110,28 +87,7 @@ public class ItemChooserController implements Initializable
     public void saveButtonClicked(ActionEvent actionEvent) {
         if(mealNameField!=null && selectedItems.size()>0)
         {
-            try(BufferedWriter bw = new BufferedWriter(new FileWriter("src/sample/Meals/mealInfo.txt",true));
-            BufferedWriter meal = new BufferedWriter(new FileWriter("src/sample/Meals/"+mealNameField.getCharacters().toString()+".txt"));
-            )
-            {
-                bw.write(mealNameField.getText());
-                bw.write("\t");
-                bw.write(Integer.toString(selectedItems.size()));
-                bw.write("\t");
-                bw.write(Integer.toString(sumItems()));
-                bw.newLine();
-                for(Item item:selectedItems)
-                {
-                    meal.write(item.getNazwaProperty());
-                    meal.write("\t");
-                    meal.write(item.getIloscProperty());
-                    meal.write("\t");
-                    meal.write(item.getSumaProperty());
-                    meal.newLine();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            mealService.addMeal(mealNameField.getText(),selectedItems);
         }
 
     }
@@ -152,13 +108,4 @@ public class ItemChooserController implements Initializable
         }
     }
 
-    public int sumItems()
-    {
-        int sum = 0;
-        for (Item item:selectedItems
-             ) {
-            sum+=Integer.parseInt(item.getIloscProperty())*Integer.parseInt(item.getSumaProperty());
-        }
-        return sum;
-    }
 }

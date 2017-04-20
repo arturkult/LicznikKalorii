@@ -12,16 +12,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
-import sample.Models.Item;
 import sample.Models.Meal;
+import sample.Services.MealService;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.StringTokenizer;
 
 public class MainController implements Initializable
 {
@@ -37,17 +33,16 @@ public class MainController implements Initializable
 
     ObservableList<Meal> meals = FXCollections.observableArrayList();
 
+    MealService mealService = new MealService();
+
     @Override
     public void initialize(URL location, ResourceBundle resources){
         nazwaColumn.setCellValueFactory(item->new SimpleStringProperty(item.getValue().getName()));
         iloscColumn.setCellValueFactory(item->new SimpleStringProperty(item.getValue().getIngredientsNumber()));
         sumaColumn.setCellValueFactory(item->new SimpleStringProperty(item.getValue().getTotalCalories()));
 
-        createItemList();
-
-        todayTableView.setItems(meals);
+        todayTableView.setItems(FXCollections.observableArrayList(mealService.listAllMeals()));
     }
-
 
     public void showItemViewer(Meal meal)
     {
@@ -61,8 +56,7 @@ public class MainController implements Initializable
             ItemChooserController controller = fxmlLoader.getController();
             controller.initData(meal);
             stage.showAndWait();
-            createItemList();
-            todayTableView.setItems(meals);
+            todayTableView.setItems(FXCollections.observableArrayList(mealService.listAllMeals()));
         }
         catch (IOException e){
             e.printStackTrace();
@@ -73,33 +67,11 @@ public class MainController implements Initializable
     public void addButtonClicked(ActionEvent actionEvent) {
         showItemViewer(null);
     }
-    public void createItemList(){
-        try
-                (BufferedReader bufferedReader = new BufferedReader(new FileReader("src/sample/Meals/mealInfo.txt"))) {
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                StringTokenizer stringTokenizer = new StringTokenizer(line, "\t");
-                String nazwa, ilosc, suma;
-                nazwa = stringTokenizer.nextToken();
-                ilosc = stringTokenizer.nextToken();
-                suma = stringTokenizer.nextToken();
-                meals.add(new Meal(nazwa, ilosc, suma));
-            }
-        }
-        catch (FileNotFoundException e)
-        {
-
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
 
     public void changeButtonClicked(ActionEvent actionEvent) {
         if (!todayTableView.getSelectionModel().isEmpty())
         {
-
+            showItemViewer(todayTableView.getSelectionModel().getSelectedItem());
         }
     }
 }
