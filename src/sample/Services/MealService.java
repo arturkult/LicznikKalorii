@@ -4,7 +4,13 @@ import sample.Models.Item;
 import sample.Models.Meal;
 
 import java.io.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -18,13 +24,15 @@ public class MealService {
         try
                 (BufferedReader bufferedReader = new BufferedReader(new FileReader("src/sample/Meals/mealInfo.txt"))) {
             String line;
+            DateFormat dateFormat = new SimpleDateFormat("dd:MM:yyyy");
             while ((line = bufferedReader.readLine()) != null) {
                 StringTokenizer stringTokenizer = new StringTokenizer(line, "\t");
-                String nazwa, ilosc, suma;
+                String nazwa, ilosc, suma,data;
+                data = stringTokenizer.nextToken();
                 nazwa = stringTokenizer.nextToken();
                 ilosc = stringTokenizer.nextToken();
                 suma = stringTokenizer.nextToken();
-                meals.add(new Meal(nazwa, ilosc, suma));
+                meals.add(new Meal(nazwa, ilosc, suma, dateFormat.parse(data)));
             }
         }
         catch (FileNotFoundException e)
@@ -34,7 +42,10 @@ public class MealService {
         catch (IOException e)
         {
             e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+
         return meals;
     }
 
@@ -60,11 +71,15 @@ public class MealService {
     }
 
 
-    public void addMeal(String mealName,List<Item> items){
+    public void addMeal(String mealName,List<Item> items, Date date){
+        DateFormat dateFormat = new SimpleDateFormat("dd:MM:yyyy");
+
         try(BufferedWriter bw = new BufferedWriter(new FileWriter("src/sample/Meals/mealInfo.txt",true));
             BufferedWriter meal = new BufferedWriter(new FileWriter("src/sample/Meals/"+mealName+".txt"));
         )
         {
+            bw.write(dateFormat.format(date));
+            bw.write("\t");
             bw.write(mealName);
             bw.write("\t");
             bw.write(Integer.toString(items.size()));

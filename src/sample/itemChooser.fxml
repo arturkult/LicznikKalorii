@@ -7,9 +7,9 @@
 
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controllers.ItemChooserController">
     <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="461.0" minWidth="10.0" prefWidth="265.0" />
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="364.0" minWidth="10.0" prefWidth="176.0" />
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="343.0" minWidth="10.0" prefWidth="323.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="461.0" minWidth="10.0" prefWidth="303.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="364.0" minWidth="10.0" prefWidth="171.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="343.0" minWidth="10.0" prefWidth="322.0" />
     </columnConstraints>
     <rowConstraints>
         <RowConstraints maxHeight="193.0" minHeight="7.0" prefHeight="69.0" vgrow="SOMETIMES" />
@@ -18,15 +18,15 @@
    <children>
        <TableView fx:id="itemsViewTable" prefHeight="406.0" prefWidth="267.0" GridPane.rowIndex="1">
          <columns>
-             <TableColumn fx:id="itemNameColumn" prefWidth="129.0" text="Nazwa" />
-             <TableColumn fx:id="itemAmountColumn" prefWidth="147.0" text="Ilosc kalorii" />
+             <TableColumn fx:id="itemNameColumn" prefWidth="174.0" text="Nazwa" />
+             <TableColumn fx:id="itemAmountColumn" prefWidth="130.0" text="Ilosc kalorii" />
          </columns>
        </TableView>
        <TableView fx:id="selectedItemTableView" prefHeight="393.0" prefWidth="303.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
          <columns>
-             <TableColumn fx:id="selectedItemNameColumn" prefWidth="91.0" text="Nazwa" />
-             <TableColumn fx:id="selectedItemAmountColumn" prefWidth="53.0" text="Ilosc" />
-            <TableColumn fx:id="selectedItemSumColumn" prefWidth="75.0" text="Column X" />
+             <TableColumn fx:id="selectedItemNameColumn" prefWidth="117.0" text="Nazwa" />
+             <TableColumn fx:id="selectedItemAmountColumn" prefWidth="77.0" text="Ilosc" />
+            <TableColumn fx:id="selectedItemSumColumn" prefWidth="128.0" text="Kalorie" />
          </columns>
        </TableView>
        <VBox alignment="CENTER" prefHeight="393.0" prefWidth="216.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -72,7 +72,7 @@
        <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
          <children>
             <Label prefHeight="42.0" prefWidth="348.0" text="Podaj datę:" />
-            <DatePicker prefHeight="41.0" prefWidth="335.0" />
+            <DatePicker fx:id="datePicker" prefHeight="41.0" prefWidth="335.0" />
          </children></VBox>
       <Label fx:id="statusLabel" alignment="CENTER" prefHeight="34.0" prefWidth="200.0" textAlignment="CENTER" GridPane.columnIndex="1" />
    </children>

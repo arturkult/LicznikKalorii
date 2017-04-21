@@ -6,10 +6,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
+import javafx.util.StringConverter;
 import sample.Models.Item;
 import sample.Models.Meal;
 import sample.Services.MealService;
@@ -17,6 +16,13 @@ import sample.Services.MealService;
 import javax.xml.soap.Text;
 import java.io.*;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
@@ -41,7 +47,12 @@ public class ItemChooserController implements Initializable
     TextField searchTextField;
     @FXML
     TextField mealNameField;
-
+    @FXML
+    Label statusLabel;
+    @FXML
+    DatePicker datePicker;
+    @FXML
+    TableColumn<Meal,String> selectedItemSumColumn;
 
     ObservableList<Item> items = FXCollections.observableArrayList();
     ObservableList<Item> selectedItems = FXCollections.observableArrayList();
@@ -52,6 +63,8 @@ public class ItemChooserController implements Initializable
         itemAmountColumn.setCellValueFactory(item->new SimpleStringProperty(item.getValue().getIloscProperty()));
         selectedItemNameColumn.setCellValueFactory(item->new SimpleStringProperty(item.getValue().getNazwaProperty()));
         selectedItemAmountColumn.setCellValueFactory(item->new SimpleStringProperty(item.getValue().getIloscProperty()));
+
+        datePicker.setValue(LocalDate.now());
 
         items = FXCollections.observableArrayList(mealService.listAllItems());
         itemsViewTable.setItems(items);
@@ -66,6 +79,11 @@ public class ItemChooserController implements Initializable
             selectedItemTableView.setItems(selectedItems);
             //selectedItemTableView.setItems(FXCollections.observableList(mealService.getItems(meal.getName())));
             mealNameField.setText(meal.getName());
+
+            DateFormat dateFormat = new SimpleDateFormat("dd:MM:yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd:MM:yyyy");
+            LocalDate localDate = LocalDate.parse(dateFormat.format(meal.getDate()), formatter);
+            datePicker.setValue(localDate);
         }
     }
     public void addSelectedItemButtonClicked(ActionEvent actionEvent) {
@@ -85,11 +103,14 @@ public class ItemChooserController implements Initializable
     }
 
     public void saveButtonClicked(ActionEvent actionEvent) {
-        if(mealNameField!=null && selectedItems.size()>0)
+        if(mealNameField.getCharacters()!=null && selectedItems.size()>0)
         {
-            mealService.addMeal(mealNameField.getText(),selectedItems);
+            LocalDate localDate = datePicker.getValue();
+            Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
+            Date date = Date.from(instant);
+            mealService.addMeal(mealNameField.getText(),selectedItems, date);
         }
-
+        else statusLabel.setText("Nie podano wszystkich parametrów");
     }
 
     public void searchTextFieldOnKeyTyped(KeyEvent keyEvent) {

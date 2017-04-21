@@ -4,6 +4,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.time.LocalDate;
+import java.util.Date;
+
+
 /**
  * Created by Artur on 14.04.2017.
  */
@@ -11,13 +15,14 @@ public class Meal {
     SimpleStringProperty name;
     SimpleStringProperty ingredientsNumber;
     SimpleStringProperty totalCalories;
+    Date date;
 
-    ObservableList<Item> ingredients = FXCollections.observableArrayList();
 
-    public Meal(String name, String ingredientsNumber,String totalCalories) {
-        this.name =new SimpleStringProperty( name);
+    public Meal(String name, String ingredientsNumber, String totalCalories, Date date) {
+        this.name =new SimpleStringProperty(name);
         this.ingredientsNumber = new SimpleStringProperty(ingredientsNumber);
         this.totalCalories =new SimpleStringProperty( totalCalories);
+        this.date = date;
     }
 
     public String getName() {
@@ -54,5 +59,12 @@ public class Meal {
 
     public void setTotalCalories(String totalCalories) {
         this.totalCalories.set(totalCalories);
+    }
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }
